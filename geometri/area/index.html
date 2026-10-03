@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Enheter – Areaenheter | Matematikportalen</title>
+<title>Area – bas gånger höjd | Matematikportalen</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
 <style>
@@ -13,438 +13,327 @@
   --gradient:linear-gradient(120deg,#66C7C2 0%,#F4A261 50%,#EC6095 100%);
   --correct:#18a348; --wrong:#e02020; --shadow:rgba(48,107,240,.12);
   --start:#3aada8; --mal:#c43d75;
+  --radius-sm:8px; --radius-md:14px; --radius-lg:20px;
+  --shadow-sm:0 2px 8px var(--shadow); --shadow-md:0 4px 20px var(--shadow);
   --font-body: Calibri, 'Atkinson Hyperlegible', sans-serif;
-  --radius-sm:8px; --radius-md:14px; --radius-lg:20px; --radius-xl:28px;
-  --shadow-sm:0 2px 8px var(--shadow); --shadow-md:0 4px 20px var(--shadow); --shadow-lg:0 8px 40px var(--shadow);
 }
 *{box-sizing:border-box;}
 body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font-body);padding-bottom:56px;position:relative;overflow-x:hidden;}
-
 .ambient{position:fixed;border-radius:50%;filter:blur(70px);opacity:.35;pointer-events:none;z-index:0;}
 .ambient.a1{width:340px;height:340px;background:#66C7C2;top:-80px;left:-80px;}
 .ambient.a2{width:380px;height:380px;background:#F4A261;bottom:-100px;right:-60px;}
 .ambient.a3{width:300px;height:300px;background:#EC6095;top:40%;right:20%;}
-
 header{background:var(--gradient);padding:16px 20px;position:sticky;top:0;z-index:10;box-shadow:0 4px 24px rgba(0,0,0,.15);}
 header h1{margin:0;color:#fff;font-family:'Montserrat',sans-serif;font-size:1.15rem;}
 header p{margin:3px 0 0;color:rgba(255,255,255,.9);font-size:.8rem;}
 main{max-width:920px;margin:0 auto;padding:18px 16px;position:relative;z-index:1;}
-.panels{display:grid;grid-template-columns:0.95fr 1.15fr;gap:16px;align-items:start;}
+.panels{display:grid;grid-template-columns:1.1fr 1fr;gap:16px;align-items:start;}
 @media(max-width:760px){.panels{grid-template-columns:1fr;}}
-.card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);padding:14px 16px;}
-.card h2{font-family:'Montserrat',sans-serif;font-size:.92rem;margin:0;}
+.card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);padding:16px;}
+.card h2{font-family:'Montserrat',sans-serif;font-size:.95rem;margin:0 0 12px;}
 
-.panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
-.infobtn{width:26px;height:26px;border-radius:50%;border:1.5px solid var(--border);background:var(--surface2);color:var(--accent);font-weight:700;font-size:.8rem;cursor:pointer;line-height:1;}
+.pillbar{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px;}
+.pill{border:1.5px solid var(--border);background:var(--surface2);color:var(--muted);border-radius:999px;padding:7px 13px;font-weight:700;font-size:.78rem;cursor:pointer;min-height:34px;}
+.pill.active{background:var(--accent);color:#fff;border-color:var(--accent);}
 
-.controls-row{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:12px;}
-.pillbar{display:flex;gap:4px;background:var(--surface2);padding:3px;border-radius:999px;width:max-content;}
-.pill{border:none;background:transparent;color:var(--muted);border-radius:999px;padding:5px 10px;font-family:var(--font-body);font-weight:600;font-size:.72rem;cursor:pointer;min-height:28px;}
-.pill.active{background:var(--accent);color:#fff;}
+.sliderrow{margin-bottom:12px;}
+.sliderrow label{display:flex;justify-content:space-between;font-size:.8rem;font-weight:700;color:var(--muted);margin-bottom:4px;}
+.sliderrow label b{color:var(--accent);}
+.sliderrow input[type=range]{width:100%;accent-color:var(--accent);}
 
-.startmal{display:flex;gap:6px;flex-wrap:wrap;}
-.chip{border-radius:999px;padding:4px 10px;font-size:.72rem;font-weight:700;border:1.5px solid;}
-.chip.start{border-color:var(--start);color:var(--start);background:color-mix(in srgb, var(--start) 10%, white);}
-.chip.mal{border-color:var(--mal);color:var(--mal);background:color-mix(in srgb, var(--mal) 10%, white);}
+.togglerow{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;}
+.togglebtn{border:1.5px solid var(--border);background:var(--surface);color:var(--muted);border-radius:999px;padding:6px 12px;font-size:.75rem;font-weight:700;cursor:pointer;}
+.togglebtn.on{background:var(--start);color:#fff;border-color:var(--start);}
 
-/* Trappan */
-.trappa-wrap{position:relative;overflow-x:auto;padding-top:38px;padding-bottom:2px;margin-bottom:10px;}
-.arc-svg{position:absolute;top:0;left:0;pointer-events:none;}
-.trappa{display:flex;align-items:flex-end;gap:8px;width:max-content;}
-.steg{flex:0 0 50px;width:50px;text-align:center;padding:7px 2px;border-radius:var(--radius-sm);border:1.5px solid var(--border);background:var(--surface2);font-weight:600;font-size:.68rem;color:var(--muted);transition:all .2s;}
-.steg.unused{border-style:dashed;opacity:.55;}
-.steg.start{background:var(--start);color:#fff;border-color:var(--start);box-shadow:var(--shadow-md);transform:translateY(-3px);}
-.steg.mal{background:var(--mal);color:#fff;border-color:var(--mal);box-shadow:var(--shadow-md);transform:translateY(-3px);}
+.svgwrap{background:var(--bg);border:1.5px dashed var(--border);border-radius:var(--radius-sm);display:flex;justify-content:center;padding:10px;}
+svg{max-width:100%;height:auto;}
+.piece{transition:transform .6s ease;}
 
-/* Ytvisualisering */
-.square-area{display:flex;flex-direction:column;align-items:center;gap:8px;}
-.square-box{width:160px;height:160px;}
-.arealabel{font-size:.82rem;font-weight:700;color:var(--text);text-align:center;}
-.approx-note{font-size:.68rem;color:var(--muted);text-align:center;opacity:.8;}
-
-.helptext{margin-top:12px;padding-top:10px;border-top:1px solid var(--border);}
-.arrow-info{text-align:center;font-size:.78rem;color:var(--accent);font-weight:600;min-height:18px;}
-.hint{text-align:center;font-size:.74rem;color:var(--muted);min-height:16px;margin-top:2px;}
-
-.top-row{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px;}
-.stats{display:flex;gap:12px;font-size:.78rem;color:var(--muted);}
-.stats b{color:var(--accent);}
-
-.question-line{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;font-size:1.2rem;font-weight:600;font-family:'Montserrat',sans-serif;margin:22px 0;}
-input[type=number]{font-family:var(--font-body);font-size:1.05rem;padding:9px 10px;border:1.5px solid var(--border);border-radius:var(--radius-sm);width:110px;min-height:42px;text-align:center;}
-input[type=number]:focus{outline:2px solid var(--accent);border-color:var(--accent);}
-.btn{font-family:var(--font-body);font-weight:600;border-radius:var(--radius-sm);padding:11px 20px;min-height:42px;border:none;cursor:pointer;font-size:.9rem;}
-.btn-primary{background:var(--accent);color:#fff;}
-.btn-secondary{background:var(--surface2);color:var(--accent);border:1.5px solid var(--border);}
-.answer-row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;}
-.feedback{text-align:center;font-weight:600;min-height:22px;margin-top:8px;font-size:.9rem;}
-.feedback.correct{color:var(--correct);}
-.feedback.wrong{color:var(--wrong);}
+.solutionbox{font-size:.92rem;line-height:2;}
+.sline{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.sline input{width:60px;padding:5px 6px;border:1.5px solid var(--border);border-radius:6px;font-family:var(--font-body);font-size:.88rem;text-align:center;}
+.sline input.correct{border-color:var(--correct);background:#eafbf0;}
+.sline input.wrong{border-color:var(--wrong);background:#fdeaea;}
+.formula{font-family:'Montserrat',sans-serif;font-weight:700;text-align:center;background:var(--surface2);border-radius:var(--radius-sm);padding:8px;margin-bottom:10px;font-size:1rem;}
+.checkbtn{margin-top:8px;border:none;background:var(--accent);color:#fff;border-radius:var(--radius-sm);padding:9px 16px;font-weight:700;font-size:.85rem;cursor:pointer;}
+.solfeedback{font-weight:700;margin-top:6px;font-size:.85rem;}
+.solfeedback.correct{color:var(--correct);}
+.solfeedback.wrong{color:var(--wrong);}
 footer{text-align:center;color:var(--muted);font-size:.75rem;margin-top:14px;position:relative;z-index:1;}
-
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(16,14,40,.45);z-index:50;align-items:center;justify-content:center;padding:20px;}
-.modal-overlay.open{display:flex;}
-.modal{background:var(--surface);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);max-width:420px;width:100%;padding:22px;position:relative;max-height:80vh;overflow-y:auto;}
-.modal h3{font-family:'Montserrat',sans-serif;margin:0 0 10px;font-size:1rem;}
-.modal-close{position:absolute;top:14px;right:14px;border:none;background:var(--surface2);color:var(--muted);width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:.9rem;}
-.prefixlist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px;}
-.prefixlist li{border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:8px 12px;}
-.prefixlist .punit{font-weight:700;font-family:'Montserrat',sans-serif;font-size:.9rem;}
-.prefixlist .pdesc{color:var(--muted);font-size:.8rem;margin-top:2px;line-height:1.4;}
 </style>
 </head>
 <body>
-<div class="ambient a1"></div>
-<div class="ambient a2"></div>
-<div class="ambient a3"></div>
-
+<div class="ambient a1"></div><div class="ambient a2"></div><div class="ambient a3"></div>
 <header>
-  <h1>◻️ Enheter – Areaenheter</h1>
-  <p>Geometri · Del B · Mängdträning</p>
+  <h1>▱ Area – bas gånger höjd</h1>
+  <p>Geometri · Rektangel, kvadrat, parallellogram, romb</p>
 </header>
 
 <main>
   <div class="panels">
     <div class="card">
-      <div class="panel-head">
-        <h2>Ytan</h2>
-        <button class="infobtn" id="infoBtn" aria-label="Om prefixen" title="Om prefixen">ⓘ</button>
-      </div>
-      <div class="controls-row">
-        <div class="pillbar" id="stodbar">
-          <button class="pill active" data-stod="1">Bågar</button>
-          <button class="pill" data-stod="2">Trappa</button>
-          <button class="pill" data-stod="3">Inget</button>
-        </div>
-        <div class="startmal">
-          <span class="chip start" id="chipStart">Start: –</span>
-          <span class="chip mal" id="chipMal">Mål: –</span>
-        </div>
+      <h2>Figur</h2>
+      <div class="pillbar" id="shapeGroup">
+        <div class="pill active" data-shape="rektangel">Rektangel</div>
+        <div class="pill" data-shape="kvadrat">Kvadrat</div>
+        <div class="pill" data-shape="parallellogram">Parallellogram</div>
+        <div class="pill" data-shape="romb">Romb</div>
       </div>
 
-      <div class="trappa-wrap" id="trappaWrap">
-        <svg class="arc-svg" id="arcSvg"></svg>
-        <div class="trappa" id="trappa"></div>
+      <div class="sliderrow">
+        <label>Bas <b id="basVal">5 cm</b></label>
+        <input type="range" id="basSlider" min="2" max="10" value="5" step="1">
+      </div>
+      <div class="sliderrow" id="hojdRow">
+        <label>Höjd <b id="hojdVal">4 cm</b></label>
+        <input type="range" id="hojdSlider" min="2" max="8" value="4" step="1">
+      </div>
+      <div class="sliderrow" id="lutaRow" style="display:none;">
+        <label>Luta <b id="lutaVal">2 cm</b></label>
+        <input type="range" id="lutaSlider" min="1" max="6" value="3" step="1">
       </div>
 
-      <div class="square-area" id="squareArea">
-        <svg class="square-box" id="squareSvg" viewBox="0 0 100 100"></svg>
-        <div class="arealabel" id="arealabel"></div>
-        <div class="approx-note" id="approxNote"></div>
+      <div class="sliderrow" id="morphRow" style="display:none;">
+        <label>Omforma till rektangel <b id="morphVal">0%</b></label>
+        <input type="range" id="morphSlider" min="0" max="100" value="0" step="2">
       </div>
 
-      <div class="helptext">
-        <div class="arrow-info" id="arrowInfo"></div>
-        <div class="hint" id="hintText"></div>
+      <div class="togglerow">
+        <button class="togglebtn" id="gridToggle">▦ Rutnät</button>
+        <button class="togglebtn" id="randomBtn">🎲 Slumpa</button>
       </div>
+
+      <div class="svgwrap"><svg id="shapeSvg"></svg></div>
     </div>
 
     <div class="card">
-      <h2>Uppgift</h2>
-      <div class="top-row" style="margin-top:10px;">
-        <div class="pillbar" id="diffbar">
-          <button class="pill active" data-diff="latt">Lätt</button>
-          <button class="pill" data-diff="svar">Svår</button>
-        </div>
-        <div class="stats">Rätt i rad: <b id="streak">0</b> &nbsp; XP: <b id="xp">0</b></div>
+      <h2>Lösningsförslag</h2>
+      <div class="pillbar" id="modeGroup">
+        <div class="pill active" data-mode="facit">Färdig redovisning</div>
+        <div class="pill" data-mode="elev">Eleven räknar</div>
       </div>
-
-      <div class="question-line">
-        <span id="qValue">–</span>
-        <input type="number" step="any" id="answerInput" placeholder="?">
-        <span id="qTarget">–</span>
-      </div>
-
-      <div class="feedback" id="feedback"></div>
-      <div class="answer-row">
-        <button class="btn btn-primary" id="checkBtn">Svara</button>
-        <button class="btn btn-secondary" id="nextBtn">Ny fråga</button>
-      </div>
+      <div class="formula">A = b · h</div>
+      <div class="solutionbox" id="solutionBox"></div>
     </div>
   </div>
   <footer>Matematikportalen · PT Ljus</footer>
 </main>
 
-<div class="modal-overlay" id="modalOverlay">
-  <div class="modal">
-    <button class="modal-close" id="modalClose" aria-label="Stäng">✕</button>
-    <h3>Prefixen för area</h3>
-    <ul class="prefixlist">
-      <li><span class="punit">kvadratkilometer — km²</span><div class="pdesc">Används för stora landytor, t.ex. kommuner eller sjöar.</div></li>
-      <li><span class="punit">hektar — hm² (ha)</span><div class="pdesc">Fortfarande vanlig i vardagen — t.ex. storleken på åkermark eller skog.</div></li>
-      <li><span class="punit">ar — dam²</span><div class="pdesc">Används ibland för tomtstorlek, men mer sällan än hektar.</div></li>
-      <li><span class="punit">kvadratmeter — m²</span><div class="pdesc">Basenheten för area, t.ex. golvyta i ett rum.</div></li>
-      <li><span class="punit">kvadratdecimeter — dm²</span><div class="pdesc">100 gånger mindre än m².</div></li>
-      <li><span class="punit">kvadratcentimeter — cm²</span><div class="pdesc">10 000 gånger mindre än m².</div></li>
-      <li><span class="punit">kvadratmillimeter — mm²</span><div class="pdesc">1 000 000 gånger mindre än m².</div></li>
-    </ul>
-  </div>
-</div>
-
 <script>
-const UNITS = ["km²","hm²","dam²","m²","dm²","cm²","mm²"];
-const ALLOWED_IDX = [0,3,4,5,6]; // hm²(hektar) och dam²(ar) exkluderas ur uppgifter men är verkliga enheter
-const SVG_NS = 'http://www.w3.org/2000/svg';
-const STEP_W = 50, GAP = 8;
+const SVG_NS='http://www.w3.org/2000/svg';
+let state = { shape:'rektangel', bas:5, hojd:4, luta:0, lutaP:3, grid:false, morph:0, mode:'facit' };
 
-const stodbar = document.getElementById('stodbar');
-const diffbar = document.getElementById('diffbar');
-const trappaEl = document.getElementById('trappa');
-const arcSvg = document.getElementById('arcSvg');
-const trappaWrap = document.getElementById('trappaWrap');
-const squareArea = document.getElementById('squareArea');
-const squareSvg = document.getElementById('squareSvg');
-const arealabel = document.getElementById('arealabel');
-const approxNote = document.getElementById('approxNote');
-const arrowInfoEl = document.getElementById('arrowInfo');
-const hintEl = document.getElementById('hintText');
-const qValue = document.getElementById('qValue');
-const qTarget = document.getElementById('qTarget');
-const answerInput = document.getElementById('answerInput');
-const feedbackEl = document.getElementById('feedback');
-const streakEl = document.getElementById('streak');
-const xpEl = document.getElementById('xp');
-const checkBtn = document.getElementById('checkBtn');
-const nextBtn = document.getElementById('nextBtn');
-const chipStart = document.getElementById('chipStart');
-const chipMal = document.getElementById('chipMal');
+const basSlider=document.getElementById('basSlider');
+const hojdSlider=document.getElementById('hojdSlider');
+const lutaSlider=document.getElementById('lutaSlider');
+const basVal=document.getElementById('basVal');
+const hojdVal=document.getElementById('hojdVal');
+const lutaVal=document.getElementById('lutaVal');
+const hojdRow=document.getElementById('hojdRow');
+const lutaRow=document.getElementById('lutaRow');
+const morphRow=document.getElementById('morphRow');
+const morphSlider=document.getElementById('morphSlider');
+const morphVal=document.getElementById('morphVal');
+const gridToggle=document.getElementById('gridToggle');
+const randomBtn=document.getElementById('randomBtn');
+const svg=document.getElementById('shapeSvg');
+const solutionBox=document.getElementById('solutionBox');
 
-let state = {
-  diff:'latt', stod:'1',
-  streak: parseInt(localStorage.getItem('pt-enheter-area-streak')||'0',10),
-  xp: parseInt(localStorage.getItem('pt-enheter-area-xp')||'0',10),
-  current: null
-};
-
-UNITS.forEach((u,i)=>{
-  const d = document.createElement('div');
-  d.className='steg'+((i===1||i===2)?' unused':'');
-  d.textContent=u; d.dataset.unit=u;
-  trappaEl.appendChild(d);
-});
-const totalW = UNITS.length*STEP_W + (UNITS.length-1)*GAP;
-arcSvg.setAttribute('width', totalW);
-arcSvg.setAttribute('height', 34);
-arcSvg.setAttribute('viewBox', `0 0 ${totalW} 34`);
-function centerX(i){ return i*(STEP_W+GAP) + STEP_W/2; }
-
-function updateStats(){
-  streakEl.textContent = state.streak;
-  xpEl.textContent = state.xp;
-  localStorage.setItem('pt-enheter-area-streak', state.streak);
-  localStorage.setItem('pt-enheter-area-xp', state.xp);
+function unitLabelName(s){
+  return {rektangel:'Rektangel',kvadrat:'Kvadrat',parallellogram:'Parallellogram',romb:'Romb'}[s];
 }
 
-function indexInAllowed(i){ return ALLOWED_IDX.indexOf(i); }
-
-function pickIndices(hard){
-  let iA,iB;
-  do{
-    iA = ALLOWED_IDX[Math.floor(Math.random()*ALLOWED_IDX.length)];
-    iB = ALLOWED_IDX[Math.floor(Math.random()*ALLOWED_IDX.length)];
-    if(!hard && Math.abs(indexInAllowed(iA)-indexInAllowed(iB))>1){ iA=iB=null; }
-  } while(iA===null || iA===iB);
-  return [iA,iB];
-}
-
-function niceValue(hard){
-  if(!hard) return Math.floor(Math.random()*40+1);
-  const useDecimal = Math.random()<0.5;
-  const base = Math.floor(Math.random()*300+1)/(useDecimal?10:1);
-  return Math.round(base*10)/10;
-}
-
-function drawArcs(iA,iB){
-  const growingRight = iB>iA;
-  const dirColor = growingRight ? 'var(--accent)' : 'var(--wrong)';
-  arcSvg.innerHTML = `<defs>
-    <marker id="arrowheadA" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto">
-      <path d="M0,0 L6,3 L0,6 Z" fill="${dirColor}"/>
-    </marker>
-  </defs>`;
-  const lo = Math.min(iA,iB), hi = Math.max(iA,iB);
-  for(let i=lo;i<hi;i++){
-    const xLeft=centerX(i), xRight=centerX(i+1), mid=(xLeft+xRight)/2;
-    const x1 = growingRight ? xLeft : xRight;
-    const x2 = growingRight ? xRight : xLeft;
-    const path = document.createElementNS(SVG_NS,'path');
-    path.setAttribute('d', `M ${x1} 32 Q ${mid} 2 ${x2} 32`);
-    path.setAttribute('stroke',dirColor);
-    path.setAttribute('stroke-width','2');
-    path.setAttribute('fill','none');
-    path.setAttribute('marker-end','url(#arrowheadA)');
-    arcSvg.appendChild(path);
-    const label = document.createElementNS(SVG_NS,'text');
-    label.setAttribute('x', mid); label.setAttribute('y', 12);
-    label.setAttribute('text-anchor','middle');
-    label.setAttribute('font-size','9.5');
-    label.setAttribute('font-weight','700');
-    label.setAttribute('fill',dirColor);
-    label.setAttribute('font-family', "Calibri, 'Atkinson Hyperlegible', sans-serif");
-    label.textContent = growingRight ? '×100' : '÷100';
-    arcSvg.appendChild(label);
+function syncControls(){
+  const isKvadrat = state.shape==='kvadrat';
+  const isRomb = state.shape==='romb';
+  const isPara = state.shape==='parallellogram';
+  hojdRow.style.display = isKvadrat ? 'none' : '';
+  lutaRow.style.display = isPara ? '' : 'none';
+  morphRow.style.display = (isPara || isRomb) ? '' : 'none';
+  if(isKvadrat){ state.hojd = state.bas; }
+  if(isRomb){
+    hojdSlider.max = state.bas - 1;
+    if(state.hojd > state.bas-1) state.hojd = state.bas-1;
+    state.luta = Math.sqrt(Math.max(state.bas*state.bas - state.hojd*state.hojd,0)); // exakt => alla sidor lika långa
+  } else {
+    hojdSlider.max = 8;
   }
+  if(isPara){
+    lutaSlider.max = state.bas - 1;
+    if(state.lutaP > state.bas-1) state.lutaP = state.bas-1;
+    state.luta = state.lutaP;
+  }
+  if(!isPara && !isRomb){ state.luta = 0; state.morph=0; morphSlider.value=0; morphVal.textContent='0%'; }
+  basVal.textContent = state.bas+' cm';
+  hojdVal.textContent = state.hojd+' cm';
+  lutaVal.textContent = (isRomb ? state.luta.toFixed(1) : state.luta)+' cm';
+  basSlider.value=state.bas; hojdSlider.value=state.hojd; if(isPara) lutaSlider.value=state.lutaP;
 }
 
-function highlightTrappa(iA,iB){
-  [...trappaEl.children].forEach((el,i)=>{
-    el.classList.remove('start','mal');
-    if(i===iA) el.classList.add('start');
-    if(i===iB) el.classList.add('mal');
-  });
-}
+function draw(){
+  const scale = 20;
+  const bas=state.bas, hojd=state.hojd, luta=state.luta;
+  const padding=24, padLeft=64;
+  const w = (2*bas+luta)*scale + padLeft + padding;
+  const h = hojd*scale + padding*2;
+  svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+  svg.setAttribute('width', Math.min(w,340));
+  svg.setAttribute('height', Math.min(h,240));
+  svg.innerHTML='';
 
-function drawSquare(iA,iB){
-  squareSvg.innerHTML='';
-  const steps = Math.abs(iB-iA);
-  const N = Math.pow(10,steps);
-  const visualN = Math.min(N,40);
+  const x0=padLeft, y0=h-padding;
+  const bp=bas*scale, hp=hojd*scale, lp=luta*scale;
+  const shiftX = (state.morph/100)*bp; // triangeln glider gradvis ett helt steg = bas åt höger
 
-  const outer = document.createElementNS(SVG_NS,'rect');
-  outer.setAttribute('x',1); outer.setAttribute('y',1);
-  outer.setAttribute('width',98); outer.setAttribute('height',98);
-  outer.setAttribute('fill','var(--surface2)');
-  outer.setAttribute('stroke','var(--start)');
-  outer.setAttribute('stroke-width',2.5);
-  squareSvg.appendChild(outer);
+  const defs=document.createElementNS(SVG_NS,'defs');
+  const clip=document.createElementNS(SVG_NS,'clipPath');
+  const clipId='clip'+Date.now();
+  clip.setAttribute('id',clipId);
+  if(luta===0){
+    const p=document.createElementNS(SVG_NS,'polygon');
+    p.setAttribute('points', `${x0},${y0} ${x0+bp},${y0} ${x0+bp},${y0-hp} ${x0},${y0-hp}`);
+    clip.appendChild(p);
+  } else {
+    // klippytan = resten (trapetsen) UNION triangeln i sitt aktuella läge (fungerar för alla mellanlägen)
+    const rest=document.createElementNS(SVG_NS,'polygon');
+    rest.setAttribute('points', `${x0+lp},${y0} ${x0+bp},${y0} ${x0+bp+lp},${y0-hp} ${x0+lp},${y0-hp}`);
+    clip.appendChild(rest);
+    const tri=document.createElementNS(SVG_NS,'polygon');
+    tri.setAttribute('points', `${x0+shiftX},${y0} ${x0+lp+shiftX},${y0-hp} ${x0+lp+shiftX},${y0}`);
+    clip.appendChild(tri);
+  }
+  defs.appendChild(clip);
 
-  if(state.stod==='1'){
+  if(state.grid){
     const patId='grid'+Date.now();
-    const defs = document.createElementNS(SVG_NS,'defs');
-    const pattern = document.createElementNS(SVG_NS,'pattern');
+    const pattern=document.createElementNS(SVG_NS,'pattern');
     pattern.setAttribute('id',patId);
-    pattern.setAttribute('width', 98/visualN);
-    pattern.setAttribute('height', 98/visualN);
+    pattern.setAttribute('width',scale); pattern.setAttribute('height',scale);
     pattern.setAttribute('patternUnits','userSpaceOnUse');
-    const cell = document.createElementNS(SVG_NS,'rect');
-    cell.setAttribute('width', 98/visualN);
-    cell.setAttribute('height', 98/visualN);
-    cell.setAttribute('fill','none');
-    cell.setAttribute('stroke','var(--accent)');
-    cell.setAttribute('stroke-width',0.4);
+    pattern.setAttribute('x', x0); pattern.setAttribute('y', y0); // rutnätet startar kant i kant med basens vänsterhörn
+    const cell=document.createElementNS(SVG_NS,'rect');
+    cell.setAttribute('width',scale); cell.setAttribute('height',scale);
+    cell.setAttribute('fill','none'); cell.setAttribute('stroke','var(--accent)'); cell.setAttribute('stroke-width','0.6');
     pattern.appendChild(cell);
     defs.appendChild(pattern);
-    squareSvg.appendChild(defs);
-
-    const gridRect = document.createElementNS(SVG_NS,'rect');
-    gridRect.setAttribute('x',1); gridRect.setAttribute('y',1);
-    gridRect.setAttribute('width',98); gridRect.setAttribute('height',98);
+    svg.appendChild(defs);
+    const gridRect=document.createElementNS(SVG_NS,'rect');
+    gridRect.setAttribute('x',x0-lp); gridRect.setAttribute('y',y0-hp);
+    gridRect.setAttribute('width',bp+2*lp+shiftX); gridRect.setAttribute('height',hp);
     gridRect.setAttribute('fill',`url(#${patId})`);
-    squareSvg.appendChild(gridRect);
-  }
-
-  const cellSize = 98/visualN;
-  const markCell = document.createElementNS(SVG_NS,'rect');
-  markCell.setAttribute('x',1); markCell.setAttribute('y',1);
-  markCell.setAttribute('width',cellSize); markCell.setAttribute('height',cellSize);
-  markCell.setAttribute('fill','var(--mal)');
-  markCell.setAttribute('opacity',.85);
-  squareSvg.appendChild(markCell);
-
-  arealabel.textContent = `1 ${UNITS[iA]} = ${(N*N).toLocaleString('sv-SE')} ${UNITS[iB]}`;
-  approxNote.textContent = N>visualN ? 'Rutnätet är schematiskt vid stora skillnader.' : '';
-}
-
-function renderScaffold(iA,iB){
-  if(state.stod==='3'){
-    trappaWrap.style.display='none';
-    squareArea.style.display='none';
-    arrowInfoEl.style.display='none';
+    gridRect.setAttribute('clip-path',`url(#${clipId})`);
+    svg.appendChild(gridRect);
   } else {
-    trappaWrap.style.display='';
-    squareArea.style.display='';
-    arrowInfoEl.style.display='';
-    highlightTrappa(iA,iB);
-    if(state.stod==='1'){ drawArcs(iA,iB); } else { arcSvg.innerHTML=''; }
-    drawSquare(iA,iB);
+    svg.appendChild(defs);
   }
 
-  const steps = Math.abs(iB-iA);
-  const dir = iB>iA ? 'multiplicera' : 'dividera';
-  const factorTxt = Math.pow(100,steps).toLocaleString('sv-SE');
-  arrowInfoEl.textContent = `${steps} steg → ${dir} med ${factorTxt}`;
-
-  const smaller = iB>iA;
-  hintEl.textContent = smaller
-    ? 'Enheten blir mindre → mätetalet blir större'
-    : 'Enheten blir större → mätetalet blir mindre';
-}
-
-function newQuestion(){
-  const hard = state.diff==='svar';
-  const [iA,iB] = pickIndices(hard);
-  const value = niceValue(hard);
-  const factor = Math.pow(100, iB-iA);
-  const answer = Math.round(value*factor*1e6)/1e6;
-
-  state.current = {iA,iB,value,answer};
-  chipStart.textContent = 'Start: '+UNITS[iA];
-  chipMal.textContent = 'Mål: '+UNITS[iB];
-  renderScaffold(iA,iB);
-
-  qValue.textContent = `${value.toLocaleString('sv-SE')} ${UNITS[iA]} =`;
-  qTarget.textContent = UNITS[iB];
-  answerInput.value='';
-  feedbackEl.textContent='';
-  feedbackEl.className='feedback';
-  answerInput.focus();
-}
-
-function checkAnswer(){
-  if(!state.current) return;
-  const userVal = parseFloat((answerInput.value||'').replace(',','.'));
-  if(isNaN(userVal)){
-    feedbackEl.textContent = 'Skriv ett tal.';
-    feedbackEl.className='feedback wrong';
-    return;
-  }
-  const diff = Math.abs(userVal - state.current.answer);
-  const tolerance = Math.max(Math.abs(state.current.answer)*1e-6, 1e-6);
-  if(diff<=tolerance){
-    feedbackEl.textContent='Rätt! 🎉';
-    feedbackEl.className='feedback correct';
-    state.streak++; state.xp += (state.diff==='svar'?15:10);
+  if(luta===0){
+    const rect=document.createElementNS(SVG_NS,'rect');
+    rect.setAttribute('x',x0); rect.setAttribute('y',y0-hp);
+    rect.setAttribute('width',bp); rect.setAttribute('height',hp);
+    rect.setAttribute('fill','none'); rect.setAttribute('stroke','var(--start)'); rect.setAttribute('stroke-width','2.5');
+    svg.appendChild(rect);
   } else {
-    feedbackEl.textContent = `Inte riktigt. Rätt svar: ${state.current.answer.toLocaleString('sv-SE')} ${UNITS[state.current.iB]}`;
-    feedbackEl.className='feedback wrong';
-    state.streak=0;
+    // streckad höjdlinje — den "sanna" vinkelräta höjden i originalfiguren
+    const hline=document.createElementNS(SVG_NS,'line');
+    hline.setAttribute('x1',x0+lp); hline.setAttribute('y1',y0);
+    hline.setAttribute('x2',x0+lp); hline.setAttribute('y2',y0-hp);
+    hline.setAttribute('stroke','var(--muted)'); hline.setAttribute('stroke-width','1.5');
+    hline.setAttribute('stroke-dasharray','4 3');
+    svg.appendChild(hline);
+
+    // resten (trapets, står still) + triangel (glider kontinuerligt med glidaren)
+    const rest=document.createElementNS(SVG_NS,'polygon');
+    rest.setAttribute('points', `${x0+lp},${y0} ${x0+bp},${y0} ${x0+bp+lp},${y0-hp} ${x0+lp},${y0-hp}`);
+    rest.setAttribute('fill','none'); rest.setAttribute('stroke','var(--start)'); rest.setAttribute('stroke-width','2.5');
+    svg.appendChild(rest);
+
+    const tri=document.createElementNS(SVG_NS,'polygon');
+    tri.setAttribute('class','piece');
+    tri.setAttribute('points', `${x0},${y0} ${x0+lp},${y0-hp} ${x0+lp},${y0}`);
+    tri.setAttribute('fill','none'); tri.setAttribute('stroke','var(--mal)'); tri.setAttribute('stroke-width','2.5');
+    tri.style.transform = `translateX(${shiftX}px)`;
+    svg.appendChild(tri);
   }
-  updateStats();
+
+  // bas/höjd-etiketter
+  const lbl1=document.createElementNS(SVG_NS,'text');
+  lbl1.setAttribute('x', x0+bp/2); lbl1.setAttribute('y', y0+16);
+  lbl1.setAttribute('text-anchor','middle'); lbl1.setAttribute('font-size','11'); lbl1.setAttribute('fill','var(--muted)');
+  lbl1.setAttribute('font-family',"Calibri, 'Atkinson Hyperlegible', sans-serif");
+  lbl1.textContent = `b = ${bas} cm`;
+  svg.appendChild(lbl1);
+  const lbl2=document.createElementNS(SVG_NS,'text');
+  lbl2.setAttribute('x', x0-8); lbl2.setAttribute('y', y0-hp/2);
+  lbl2.setAttribute('text-anchor','end'); lbl2.setAttribute('font-size','11'); lbl2.setAttribute('fill','var(--muted)');
+  lbl2.setAttribute('font-family',"Calibri, 'Atkinson Hyperlegible', sans-serif");
+  lbl2.textContent = `h = ${hojd} cm`;
+  svg.appendChild(lbl2);
 }
 
-stodbar.querySelectorAll('.pill').forEach(btn=>{
-  btn.addEventListener('click',()=>{
-    stodbar.querySelectorAll('.pill').forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
-    state.stod = btn.dataset.stod;
-    renderScaffold(state.current.iA, state.current.iB);
+function renderSolution(){
+  const b=state.bas, h=state.hojd, a=b*h;
+  if(state.mode==='facit'){
+    solutionBox.innerHTML = `
+      <div class="sline">${unitLabelName(state.shape)}</div>
+      <div class="sline">Bas = ${b} cm</div>
+      <div class="sline">Höjd = ${h} cm</div>
+      <div class="sline">Area = b · h = ${b} cm · ${h} cm = <b>${a} cm²</b></div>
+    `;
+  } else {
+    solutionBox.innerHTML = `
+      <div class="sline">Bas = <input type="number" id="inB"> cm</div>
+      <div class="sline">Höjd = <input type="number" id="inH"> cm</div>
+      <div class="sline">Area = b · h = <input type="number" id="inA"> cm²</div>
+      <button class="checkbtn" id="checkSol">Kolla</button>
+      <div class="solfeedback" id="solFb"></div>
+    `;
+    document.getElementById('checkSol').addEventListener('click', ()=>{
+      const inB=document.getElementById('inB'), inH=document.getElementById('inH'), inA=document.getElementById('inA');
+      const okB = parseFloat(inB.value)===b, okH=parseFloat(inH.value)===h, okA=parseFloat(inA.value)===a;
+      [[inB,okB],[inH,okH],[inA,okA]].forEach(([el,ok])=>{
+        el.classList.toggle('correct',ok); el.classList.toggle('wrong',!ok && el.value!=='');
+      });
+      const fb=document.getElementById('solFb');
+      if(okB&&okH&&okA){ fb.textContent='Rätt! 🎉'; fb.className='solfeedback correct'; }
+      else { fb.textContent='Något stämmer inte än — kolla igen.'; fb.className='solfeedback wrong'; }
+    });
+  }
+}
+
+function renderAll(){ syncControls(); draw(); renderSolution(); }
+
+document.querySelectorAll('#shapeGroup .pill').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('#shapeGroup .pill').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active'); state.shape=btn.dataset.shape; state.morph=0; morphSlider.value=0; morphVal.textContent='0%';
+    renderAll();
   });
 });
-diffbar.querySelectorAll('.pill').forEach(btn=>{
-  btn.addEventListener('click',()=>{
-    diffbar.querySelectorAll('.pill').forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
-    state.diff = btn.dataset.diff;
-    newQuestion();
+document.querySelectorAll('#modeGroup .pill').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('#modeGroup .pill').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active'); state.mode=btn.dataset.mode;
+    renderSolution();
   });
 });
-
-checkBtn.addEventListener('click', checkAnswer);
-nextBtn.addEventListener('click', newQuestion);
-answerInput.addEventListener('keydown', e=>{ if(e.key==='Enter') checkAnswer(); });
-
-document.getElementById('infoBtn').addEventListener('click', ()=>{
-  document.getElementById('modalOverlay').classList.add('open');
+basSlider.addEventListener('input', ()=>{ state.bas=parseInt(basSlider.value,10); renderAll(); });
+hojdSlider.addEventListener('input', ()=>{ state.hojd=parseInt(hojdSlider.value,10); renderAll(); });
+lutaSlider.addEventListener('input', ()=>{ state.lutaP=parseInt(lutaSlider.value,10); state.luta=state.lutaP; renderAll(); });
+gridToggle.addEventListener('click', ()=>{ state.grid=!state.grid; gridToggle.classList.toggle('on',state.grid); draw(); });
+morphSlider.addEventListener('input', ()=>{
+  state.morph = parseInt(morphSlider.value,10);
+  morphVal.textContent = state.morph+'%';
+  draw();
 });
-document.getElementById('modalClose').addEventListener('click', ()=>{
-  document.getElementById('modalOverlay').classList.remove('open');
-});
-document.getElementById('modalOverlay').addEventListener('click', (e)=>{
-  if(e.target.id==='modalOverlay') e.target.classList.remove('open');
+randomBtn.addEventListener('click', ()=>{
+  state.bas = Math.floor(Math.random()*(parseInt(basSlider.max,10)-2+1))+2;
+  const maxH = state.shape==='romb' ? state.bas-1 : 8;
+  state.hojd = Math.floor(Math.random()*(maxH-2+1))+2;
+  renderAll();
 });
 
-updateStats();
-newQuestion();
+renderAll();
 </script>
 </body>
 </html>
